@@ -1,0 +1,104 @@
+## 1. Script de Auditoría Automatizada (`auditoria_pc.ps1`)
+
+```powershell
+<#
+.SYNOPSIS
+    Script de Auditoría Manual de Seguridad Local para Windows
+.DESCRIPTION
+    Extrae la información de políticas de seguridad, firewall, antivirus, 
+    redes y mecanismos de persistencia en el sistema operativo.
+#>
+
+Write-Host "======================================================" -ForegroundColor Cyan
+Write-Host "       INFORME DE AUDITORÍA DE SEGURIDAD LOCAL        " -ForegroundColor Cyan
+Write-Host "======================================================" -ForegroundColor Cyan
+
+# 1. POLÍTICAS DE CONTRASEÑA
+Write-Host "`n[+] 1. POLÍTICAS DE CONTRASEÑA ACTUALES" -ForegroundColor Yellow
+net accounts
+
+# 2. ESTADO DEL FIREWALL
+Write-Host "`n[+] 2. ESTADO DEL FIREWALL DE WINDOWS" -ForegroundColor Yellow
+Get-NetFirewallProfile | Select-Object Name, Enabled | Format-Table -AutoSize
+
+# 3. ESTADO DEL ANTIVIRUS
+Write-Host "`n[+] 3. ESTADO DEL ANTIVIRUS / ANTIMALWARE" -ForegroundColor Yellow
+Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntivirusProduct | 
+    Select-Object displayName, productState, pathToSignedReportingExe | Format-Table -AutoSize
+
+# 4. CONFIGURACIÓN DE RED Y TABLA ARP
+Write-Host "`n[+] 4. CONFIGURACIÓN DE RED E INTERFACES" -ForegroundColor Yellow
+Get-NetIPConfiguration | Select-Object InterfaceAlias, IPv4Address, IPv4DefaultGateway, DNSServer | Format-Table -AutoSize
+
+Write-Host "`n[+] 5. TABLA ARP (VECINOS EN RED LOCAL)" -ForegroundColor Yellow
+Get-NetNeighbor -AddressFamily IPv4 | Where-Object State -ne "Unreachable" | 
+    Select-Object IPAddress, LinkLayerAddress, State | Format-Table -AutoSize
+
+# 5. PUNTOS DE PERSISTENCIA (MECANISMOS DE INICIO AUTOMÁTICO)
+Write-Host "`n[+] 6. PERSISTENCIA: REGISTRO RUN (HKLM & HKCU)" -ForegroundColor Yellow
+Write-Host "--- HKEY_LOCAL_MACHINE ---" -ForegroundColor Gray
+Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -ErrorAction SilentlyContinue | 
+    Select-Object * -ExcludeProperty PS*
+
+Write-Host "--- HKEY_CURRENT_USER ---" -ForegroundColor Gray
+Get-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -ErrorAction SilentlyContinue | 
+    Select-Object * -ExcludeProperty PS*
+
+Write-Host "`n[+] 7. PERSISTENCIA: TAREAS PROGRAMADAS NO DEL SISTEMA" -ForegroundColor Yellow
+Get-ScheduledTask | Where-Object {$_.State -eq "Ready" -and $_.TaskPath -notlike "\Microsoft*"} | 
+    Select-Object TaskName, TaskPath, State | Format-Table -AutoSize
+
+Write-Host "`n======================================================" -ForegroundColor Cyan
+Write-Host "            FIN DE LA AUDITORÍA DE SEGURIDAD           " -ForegroundColor Cyan
+Write-Host "======================================================" -ForegroundColor Cyan
+======================================================
+       INFORME DE AUDITORÍA DE SEGURIDAD LOCAL        
+======================================================
+
+[+] 1. POLÍTICAS DE CONTRASEÑA ACTUALES
+Fuerza a los usuarios a cerrar sesión cuando expire el tiempo de acceso?: No
+Longitud mínima de la contraseña:                                      8
+Edad mínima de la contraseña (días):                                   0
+Edad máxima de la contraseña (días):                                   42
+Historial de contraseñas guardadas:                                    Ninguno
+Umbral de bloqueo de cuenta:                                           0
+Duración del bloqueo de cuenta (minutos):                              30
+Ventana de observación de bloqueo (minutos):                           30
+
+[+] 2. ESTADO DEL FIREWALL DE WINDOWS
+Name    Enabled
+----    -------
+Domain     True
+Private    True
+Public     True
+
+[+] 3. ESTADO DEL ANTIVIRUS / ANTIMALWARE
+displayName      productState pathToSignedReportingExe
+-----------      ------------ ------------------------
+Windows Defender       266240 %ProgramFiles%\Windows Defender\MsMpEng.exe
+
+[+] 4. CONFIGURACIÓN DE RED E INTERFACES
+InterfaceAlias IPv4Address   IPv4DefaultGateway DNSServer
+-------------- -----------   ------------------ ---------
+Wi-Fi          192.168.1.15  192.168.1.1        {192.168.1.1, 8.8.8.8}
+
+[+] 5. TABLA ARP (VECINOS EN RED LOCAL)
+IPAddress   LinkLayerAddress  State
+---------   ----------------  -----
+192.168.1.1 00-11-32-AA-BB-CC Reachable
+
+[+] 6. PERSISTENCIA: REGISTRO RUN (HKLM & HKCU)
+--- HKEY_LOCAL_MACHINE ---
+SecurityHealth : C:\Windows\System32\SecurityHealthSystray.exe
+
+--- HKEY_CURRENT_USER ---
+OneDrive : C:\Users\Usuario\AppData\Local\Microsoft\OneDrive\OneDrive.exe
+
+[+] 7. PERSISTENCIA: TAREAS PROGRAMADAS NO DEL SISTEMA
+TaskName        TaskPath State
+--------        -------- -----
+UpdateCheckTask \Custom\ Ready
+
+======================================================
+            FIN DE LA AUDITORÍA DE SEGURIDAD           
+======================================================
