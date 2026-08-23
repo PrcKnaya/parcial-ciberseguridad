@@ -1,0 +1,158 @@
+### 1. Copia de seguridad en la nube y local
+
+Para solucionar la situación planteada se utilizará **Git y GitHub**. El proyecto tendrá una copia local en el computador y otra copia en GitHub.
+
+### Usuario 1
+
+Primero se crea un repositorio en GitHub.
+
+Después, desde el terminal, se crea la carpeta del proyecto:
+
+```bash
+mkdir proyecto-ciberseguridad
+cd proyecto-ciberseguridad
+```
+
+Se inicia Git:
+
+```bash
+git init
+```
+
+Se crean o agregan los archivos del proyecto.
+
+Después se agregan los archivos:
+
+```bash
+git add .
+```
+
+Se realiza el primer commit:
+
+```bash
+git commit -m "Primer commit"
+```
+
+Se conecta el proyecto local con el repositorio de GitHub:
+
+```bash
+git remote add origin URL_DEL_REPOSITORIO
+```
+
+Finalmente se sube la información:
+
+```bash
+git branch -M main
+git push -u origin main
+```
+
+Con esto se tiene una copia del proyecto en el computador y otra en GitHub.
+
+### Usuario 2
+
+El segundo usuario puede descargar el proyecto utilizando:
+
+```bash
+git clone URL_DEL_REPOSITORIO
+```
+
+Luego entra a la carpeta:
+
+```bash
+cd proyecto-ciberseguridad
+```
+
+De esta forma puede acceder a los archivos del proyecto.
+
+---
+
+# 2. Comandos de la red y del computador
+
+## Conexión a Internet
+
+Para comprobar si el computador tiene conexión a Internet:
+
+```cmd
+ping google.com
+```
+
+Si aparecen respuestas, existe conexión.
+
+## Información de la red
+
+Para visualizar la configuración de red:
+
+```cmd
+ipconfig
+```
+
+Para obtener información más completa:
+
+```cmd
+ipconfig /all
+```
+
+Esto permite revisar la configuración de las redes y observar sus direcciones IP.
+
+## Procesos y tareas
+
+Para visualizar los procesos que están funcionando:
+
+```cmd
+tasklist
+```
+
+## Almacenamiento
+
+Para observar el almacenamiento de los discos:
+
+```cmd
+wmic logicaldisk get size,freespace,caption
+```
+
+## Memoria RAM
+
+Para consultar información del sistema y de la memoria:
+
+```cmd
+systeminfo
+```
+
+---
+
+# 3. Copia de seguridad
+
+Para realizar una copia de seguridad local de una carpeta se puede utilizar:
+
+```cmd
+robocopy "C:\Carpeta" "D:\Copia" /E
+```
+
+La información de la carpeta original se copia en otra ubicación.
+
+---
+
+# 4. Esquema del proyecto
+
+
+             GITHUB
+          COPIA EN LA NUBE
+               ▲
+               │
+             GIT
+               ▲
+               │
+          USUARIO 1
+               │
+          CARPETA LOCAL
+               │
+               ▼
+          COPIA LOCAL
+               │
+               ▼
+          USUARIO 2
+```
+
+# 5. Resultado
+
+ya contamos con el proyecto compartido donde la información puede mantenerse en una copia local y en una copia en la nube mediante Git y GitHub.
