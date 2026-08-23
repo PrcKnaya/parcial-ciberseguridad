@@ -1,0 +1,77 @@
+1. ¿Cómo visualizo que existe conexión de cada PC a Internet?
+
+En cada computador se abre la consola de Windows y se utiliza:
+
+```cmd
+ping google.com
+```
+
+Si aparecen respuestas del servidor, se puede comprobar que el computador tiene conexión a Internet.
+
+También se puede consultar la configuración de red con:
+
+```cmd
+ipconfig
+```
+
+---
+
+2. ¿Cómo visualizo que la RED 1 es independiente de la RED 2?
+
+Se utiliza:
+
+```cmd
+ipconfig /all
+```
+
+Con este comando se pueden observar las configuraciones de las conexiones de red.
+
+Para comprobar la comunicación entre dos equipos también se puede utilizar:
+
+```cmd
+ping DIRECCION_IP
+```
+
+Si un equipo de la RED 1 no tiene comunicación con un equipo de la RED 2, se puede comprobar que las redes están separadas.
+
+---
+
+3. ¿Cómo exploro los procesos y tareas desde la consola de Windows?
+
+Se utiliza el comando:
+
+```cmd
+tasklist
+```
+
+Este comando muestra los procesos que se están ejecutando en el computador.
+
+---
+
+ 4. ¿Cómo observo el almacenamiento de los discos y la memoria RAM usada?
+
+Para observar las unidades de almacenamiento:
+
+```cmd
+wmic logicaldisk get size,freespace,caption
+```
+
+Para consultar información del sistema y la memoria:
+
+```cmd
+systeminfo
+```
+
+---
+
+ 5. ¿Cómo hago una copia de seguridad de los dispositivos en el PC?
+
+Se puede utilizar `robocopy` para copiar los archivos de una carpeta a otra ubicación:
+
+```cmd
+robocopy "C:\Carpeta" "D:\Copia" /E
+```
+
+En este ejemplo, los archivos de `C:\Carpeta` se copian a `D:\Copia`.
+
+De esta manera se obtiene una copia de seguridad local de los archivos.
